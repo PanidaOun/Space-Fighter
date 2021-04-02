@@ -46,23 +46,41 @@ class SpaceGame(GameApp):
 
     def bullet_count(self):
         return len(self.bullets)
+    
+    # Extract the circle drawing code
+    def circle_drawing(self):
+        self.bomb_canvas_id = self.canvas.create_oval(
+            self.ship.x - BOMB_RADIUS, 
+            self.ship.y - BOMB_RADIUS,
+            self.ship.x + BOMB_RADIUS, 
+            self.ship.y + BOMB_RADIUS
+        )
+    
+    # Try to hide access to self.after
+    def hide_after(self):
+        self.after(200, lambda: self.canvas.delete(self.bomb_canvas_id))
+
+    # Extract the enemy destroying loop into a function.
+    def enemy_destroying(self):
+        for e in self.enemies:
+            if self.ship.distance_to(e) <= BOMB_RADIUS:
+                e.to_be_deleted = True
+
+    # Create special canvas objects that disappear over time.
+    def rectangle_drawing(self):
+        self.rectangle_canvas_id = self.canvas.create_rectangle(self.ship.x - BOMB_RADIUS, 
+            self.ship.y - BOMB_RADIUS,
+            self.ship.x + BOMB_RADIUS, 
+            self.ship.y + BOMB_RADIUS)
+        self.after(200, lambda: self.canvas.delete(self.rectangle_canvas_id))
 
     def bomb(self):
         if self.bomb_power.value == BOMB_FULL_POWER:
             self.bomb_power.value = 0
-
-            self.bomb_canvas_id = self.canvas.create_oval(
-                self.ship.x - BOMB_RADIUS,
-                self.ship.y - BOMB_RADIUS,
-                self.ship.x + BOMB_RADIUS,
-                self.ship.y + BOMB_RADIUS
-            )
-
-            self.after(200, lambda: self.canvas.delete(self.bomb_canvas_id))
-
-            for e in self.enemies:
-                if self.ship.distance_to(e) <= BOMB_RADIUS:
-                    e.to_be_deleted = True
+            self.rectangle_drawing()
+            self.circle_drawing()
+            self.hide_after()
+            self.enemy_destroying()
 
     def update_score(self):
         self.score_wait += 1
