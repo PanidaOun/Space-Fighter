@@ -138,10 +138,8 @@ class SpaceGame(GameApp):
 
     def post_update(self):
         self.process_collisions()
-
         self.bullets = self.update_and_filter_deleted(self.bullets)
         self.enemies = self.update_and_filter_deleted(self.enemies)
-
         self.update_score()
         self.update_bomb_power()
 
