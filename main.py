@@ -27,7 +27,6 @@ class SpaceGame(GameApp):
         self.update_bomb_power_text()
 
         self.elements.append(self.ship)
-
         self.enemies = []
         self.bullets = []
         self.enemy_creation_strategies = [
